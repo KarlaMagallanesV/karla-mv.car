@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-vehiculos-deployment
+  namespace: ms-vehiculos-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-vehiculos
+  template:
+    metadata:
+      labels:
+        app: ms-vehiculos
+    spec:
+      containers:
+      - name: ms-vehiculos-container
+        image: anyeli/ms-vehiculos:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        envFrom:
+        - secretRef:
+            name: ms-vehiculos-secret
