@@ -4,34 +4,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pe.edu.vallegrande.karla_mv.car.model.Vehiculo;
 import pe.edu.vallegrande.karla_mv.car.repository.VehiculoRepository;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class VehiculoService {
     private final VehiculoRepository vehiculoRepository;
 
-    public List<Vehiculo> findAll() {
+    public Flux<Vehiculo> findAll() {
         return vehiculoRepository.findAll();
     }
 
-    public Optional<Vehiculo> findById(Long id) {
+    public Mono<Vehiculo> findById(Long id) {
         return vehiculoRepository.findById(id);
     }
 
-    public Vehiculo save(Vehiculo vehiculo) {
+    public Mono<Vehiculo> save(Vehiculo vehiculo) {
         return vehiculoRepository.save(vehiculo);
     }
 
-    public void deleteById(Long id) {
-        vehiculoRepository.deleteById(id);
+    public Mono<Void> deleteById(Long id) {
+        return vehiculoRepository.deleteById(id);
     }
 
-    public Vehiculo update(Long id, Vehiculo vehiculoDetails) {
+    public Mono<Vehiculo> update(Long id, Vehiculo vehiculoDetails) {
         return vehiculoRepository.findById(id)
-                .map(vehiculo -> {
+                .flatMap(vehiculo -> {
                     vehiculo.setPlaca(vehiculoDetails.getPlaca());
                     vehiculo.setMarca(vehiculoDetails.getMarca());
                     vehiculo.setModelo(vehiculoDetails.getModelo());
@@ -40,7 +39,6 @@ public class VehiculoService {
                     vehiculo.setPrecioPorDia(vehiculoDetails.getPrecioPorDia());
                     vehiculo.setEstado(vehiculoDetails.getEstado());
                     return vehiculoRepository.save(vehiculo);
-                })
-                .orElse(null);
+                });
     }
 }
